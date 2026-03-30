@@ -1,2 +1,0 @@
-GET http://localhost:8080/api/cart
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEb2VAZXhhbXBsZS5jb20iLCJpYXQiOjE3NzI2OTc1NzMsImV4cCI6MTc3Mjc4Mzk3M30.6tPJ6ygnj8ndVphOVf1GO3kUewDxy3JYadzvPJ5iaRU
