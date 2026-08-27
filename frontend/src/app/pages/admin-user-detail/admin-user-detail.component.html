@@ -1,0 +1,59 @@
+<div class="ml-60 min-h-screen bg-ink-50 px-8 py-8">
+
+  <div *ngIf="loading()" class="text-center py-20 text-ink-400">Loading...</div>
+
+  <div *ngIf="!loading() && user()">
+
+    <!-- Header -->
+    <div class="flex items-center gap-4 mb-8">
+      <button (click)="goBack()"
+              class="text-ink-400 hover:text-ink transition-colors bg-transparent border-none cursor-pointer text-2xl">←</button>
+      <h2 class="font-serif text-3xl font-black text-ink">User Details</h2>
+    </div>
+
+    <div class="bg-white border border-ink-100 p-6 max-w-2xl">
+
+      <!-- Avatar -->
+      <div class="flex items-center gap-4 mb-8 pb-6 border-b border-ink-100">
+        <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-2xl font-black text-ink">
+          {{ user().firstName?.charAt(0) }}{{ user().lastName?.charAt(0) }}
+        </div>
+        <div>
+          <h3 class="font-serif text-2xl font-black text-ink">{{ user().firstName }} {{ user().lastName }}</h3>
+          <span [class]="'text-xs font-black px-2 py-1 rounded-full ' + (user().role === 'ADMIN' ? 'bg-gold text-ink' : 'bg-ink-100 text-ink-600')">
+            {{ user().role }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Infos -->
+      <div class="flex flex-col gap-4">
+        <div class="flex justify-between border-b border-ink-100 pb-3">
+          <span class="text-xs font-black tracking-widest uppercase text-ink-400">Email</span>
+          <span class="font-semibold text-ink">{{ user().email }}</span>
+        </div>
+        <div class="flex justify-between border-b border-ink-100 pb-3">
+          <span class="text-xs font-black tracking-widest uppercase text-ink-400">Phone</span>
+          <span class="font-semibold text-ink">{{ user().phone || '—' }}</span>
+        </div>
+        <div class="flex justify-between border-b border-ink-100 pb-3">
+          <span class="text-xs font-black tracking-widest uppercase text-ink-400">City</span>
+          <span class="font-semibold text-ink">{{ user().city || '—' }}</span>
+        </div>
+        <div class="flex justify-between border-b border-ink-100 pb-3">
+          <span class="text-xs font-black tracking-widest uppercase text-ink-400">Address</span>
+          <span class="font-semibold text-ink">{{ user().address || '—' }}</span>
+        </div>
+        <div class="flex justify-between border-b border-ink-100 pb-3">
+          <span class="text-xs font-black tracking-widest uppercase text-ink-400">Country</span>
+          <span class="font-semibold text-ink">{{ user().country || '—' }}</span>
+        </div>
+        <div class="flex justify-between pb-3">
+          <span class="text-xs font-black tracking-widest uppercase text-ink-400">Joined</span>
+          <span class="font-semibold text-ink">{{ user().createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

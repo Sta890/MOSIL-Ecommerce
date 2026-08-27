@@ -1,0 +1,157 @@
+<div class="min-h-screen bg-white px-6 lg:px-16 py-8" *ngIf="product() as p">
+
+  <!-- BREADCRUMB -->
+  <nav class="flex gap-2 text-sm text-ink-400 mb-10">
+    <a routerLink="/" class="hover:text-gold transition-colors no-underline">Home</a>
+    <span>/</span>
+    <a routerLink="/products" class="hover:text-gold transition-colors no-underline">Products</a>
+    <span>/</span>
+    <span class="text-ink font-medium truncate">{{ p.name }}</span>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-20">
+
+    <!-- IMAGE -->
+    <div class="sticky top-24 h-fit">
+      <div class="relative overflow-hidden bg-ink-50" style="aspect-ratio:3/4">
+        <img [src]="getSelectedImage()" [alt]="p.name" class="w-full h-full object-cover">
+        <div class="absolute top-4 left-4 flex flex-col gap-1.5">
+          <span *ngIf="p.isNew" class="badge-new">NEW</span>
+          <span *ngIf="p.isSale" class="badge-sale">-{{ getDiscount() }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="flex flex-col">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-[10px] font-black tracking-[0.25em] uppercase text-ink-500">{{ p.brand }}</span>
+        <span class="text-xs text-ink-400">{{ p.category | titlecase }} · {{ p.type | titlecase }}</span>
+      </div>
+
+      <h1 class="font-serif text-4xl lg:text-5xl font-black text-ink leading-tight mb-4">{{ p.name }}</h1>
+
+      <!-- Rating -->
+      <div class="flex items-center gap-2 mb-6">
+        <span class="text-gold text-lg">{{ getStars(p.rating) }}</span>
+        <span class="font-bold text-sm">{{ p.rating }}</span>
+        <span class="text-ink-400 text-sm">({{ p.reviewCount }} reviews)</span>
+      </div>
+
+      <!-- Price -->
+      <div class="flex items-baseline gap-3 mb-6">
+        <span class="text-4xl font-black text-ink">{{ p.price | currency :'XOF':'symbol':'1.0-0'}}</span>
+        <span *ngIf="p.originalPrice" class="text-xl text-ink-400 line-through">{{ p.originalPrice | currency :'XOF':'symbol':'1.0-0'}}</span>
+        <span *ngIf="p.originalPrice" class="text-sm font-bold text-red-500 bg-red-50 px-2 py-0.5">Save {{ getDiscount() }}%</span>
+      </div>
+
+      <p class="text-ink-500 leading-relaxed mb-8 text-base">{{ p.description }}</p>
+
+      <!-- Color -->
+      <div class="mb-6">
+        <p class="text-[10px] font-black tracking-widest uppercase text-ink-600 mb-3">
+          Color: <span class="text-ink normal-case tracking-normal font-bold text-sm">{{ selectedColor() }}</span>
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <button *ngFor="let color of getColors()"
+                  (click)="selectedColor.set(color)"
+                  class="px-3 py-1.5 text-xs border transition-all"
+                  [class]="selectedColor() === color ? 'bg-ink text-white border-ink' : 'bg-white text-ink border-ink-200 hover:border-ink'">
+            {{ color }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Size -->
+      <div class="mb-6">
+        <p class="text-[10px] font-black tracking-widest uppercase text-ink-600 mb-3">
+          Size: <span class="text-ink normal-case tracking-normal font-bold text-sm">{{ selectedSize() }}</span>
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <button *ngFor="let size of getSizes()"
+                  (click)="selectedSize.set(size)"
+                  class="w-14 h-14 text-sm font-bold border transition-all flex items-center justify-center"
+                  [class]="selectedSize() === size ? 'bg-ink text-white border-ink' : 'bg-white text-ink border-ink-200 hover:border-ink'">
+            {{ size }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="mb-8">
+        <p class="text-[10px] font-black tracking-widest uppercase text-ink-600 mb-3">Quantity</p>
+        <div class="flex items-center border border-ink-200 w-fit">
+          <button (click)="quantity.set(quantity() > 1 ? quantity() - 1 : 1)"
+                  class="w-11 h-11 bg-ink-50 hover:bg-ink-100 transition-colors text-lg font-bold flex items-center justify-center">−</button>
+          <span class="w-12 text-center font-bold text-base">{{ quantity() }}</span>
+          <button (click)="quantity.set(quantity() + 1)"
+                  class="w-11 h-11 bg-ink-50 hover:bg-ink-100 transition-colors text-lg font-bold flex items-center justify-center">+</button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 mb-8 flex-wrap">
+        <button (click)="addToCart()"
+                class="flex-1 py-4 font-bold text-sm tracking-widest uppercase transition-all border-none cursor-pointer"
+                [class]="added() ? 'bg-green-600 text-white' : 'bg-ink text-white hover:bg-gold hover:text-ink'">
+          {{ added() ? '✓ Added to Cart!' : '🛒 Add to Cart' }}
+        </button>
+        <a *ngIf="cartService.count() > 0" routerLink="/cart"
+           class="px-6 py-4 bg-gold text-ink font-bold text-sm tracking-wide no-underline flex items-center whitespace-nowrap hover:opacity-85 transition-opacity">
+          View Cart ({{ cartService.count() }})
+        </a>
+      </div>
+
+      <!-- Perks -->
+      <div class="border-t border-ink-100 pt-6 flex flex-col gap-2">
+        <p class="text-sm text-ink-500">🚚 Free shipping on orders over $100</p>
+        <p class="text-sm text-ink-500">↩️ Free 30-day returns</p>
+        <p class="text-sm text-ink-500">🔒 Secure checkout</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="mb-20 border-t border-ink-100 pt-10">
+    <div class="flex border-b border-ink-100 mb-8">
+      <button *ngFor="let tab of ['description', 'details', 'shipping']"
+              (click)="activeTab.set(tab)"
+              class="px-8 py-3 text-sm font-semibold capitalize border-b-2 -mb-px transition-all"
+              [class]="activeTab() === tab ? 'border-gold text-ink' : 'border-transparent text-ink-400 hover:text-ink'">
+        {{ tab }}
+      </button>
+    </div>
+    <div class="max-w-2xl text-ink-500 leading-relaxed">
+      <ng-container *ngIf="activeTab() === 'description'">
+        <p class="mb-4">{{ p.description }}</p>
+        <div class="flex flex-wrap gap-2 mt-4">
+          <span *ngFor="let tag of getTags()" class="bg-ink-50 text-ink-500 text-xs px-3 py-1">#{{ tag }}</span>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="activeTab() === 'details'">
+        <table class="w-full text-sm">
+          <tr *ngFor="let row of [['Brand', p.brand], ['Category', p.category], ['Type', p.type], ['Sizes', getSizes().join(', ')], ['Colors', getColors().join(', ')], ['Rating', p.rating + '/5 (' + p.reviewCount + ' reviews)']]"
+              class="border-b border-ink-100">
+            <td class="py-3 font-semibold text-ink w-40">{{ row[0] }}</td>
+            <td class="py-3 capitalize">{{ row[1] }}</td>
+          </tr>
+        </table>
+      </ng-container>
+      <ng-container *ngIf="activeTab() === 'shipping'">
+        <p class="mb-3"><strong class="text-ink">Standard Shipping:</strong> 3–5 business days — $9.99</p>
+        <p class="mb-3"><strong class="text-ink">Express Shipping:</strong> 1–2 business days — $19.99</p>
+        <p class="mb-3"><strong class="text-ink">Free Shipping:</strong> On all orders over $100</p>
+        <p><strong class="text-ink">Returns:</strong> Free returns within 30 days of purchase.</p>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- RELATED -->
+  <div *ngIf="related().length > 0">
+    <h2 class="font-serif text-3xl font-black text-ink mb-8">You May Also Like</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+      <app-product-card *ngFor="let rp of related()" [product]="rp"></app-product-card>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="min-h-screen bg-ink flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+
+    <!-- Logo -->
+    <div class="text-center mb-10">
+      <h1 class="font-serif text-4xl font-black text-white mb-2">
+        MOSIL-<span class="text-gold">SHOP</span>
+      </h1>
+      <p class="text-ink-400 text-sm tracking-widest uppercase">Administration</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white p-8">
+      <h2 class="font-serif text-2xl font-black text-ink mb-2">Admin Login</h2>
+      <p class="text-ink-400 text-sm mb-8">Accès réservé aux administrateurs</p>
+
+      <!-- Error -->
+      <div *ngIf="error()" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 mb-6 text-sm">
+        ✗ {{ error() }}
+      </div>
+
+      <!-- Form -->
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] font-black tracking-widests uppercase text-ink-600">Email</label>
+          <input type="email" [(ngModel)]="loginData.email"
+                 placeholder="admin@example.com"
+                 class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] font-black tracking-widests uppercase text-ink-600">Mot de passe</label>
+          <input type="password" [(ngModel)]="loginData.password"
+                 placeholder="••••••••"
+                 class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors"
+                 (keyup.enter)="login()">
+        </div>
+        <button (click)="login()" [disabled]="loading()"
+                class="w-full py-3 bg-gold text-ink font-black text-sm tracking-widests uppercase hover:bg-ink hover:text-white transition-colors mt-2">
+          {{ loading() ? 'Connexion...' : 'Se connecter' }}
+        </button>
+      </div>
+
+      <!-- Back to shop -->
+      <div class="text-center mt-6">
+        <a routerLink="/admin-register" class="text-xs text-gold hover:text-ink transition-colors no-underline">
+          Créer un compte admin →
+        </a>
+        <a routerLink="/" class="text-xs text-ink-400 hover:text-ink transition-colors no-underline">
+          ← Retour à la boutique
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply font-sans text-ink bg-white antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  ::selection {
+    @apply bg-gold text-ink;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-ink-100; }
+  ::-webkit-scrollbar-thumb { @apply bg-ink-300 rounded; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-ink-400; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-block bg-gold text-ink font-bold text-sm tracking-widest uppercase px-8 py-4 transition-opacity hover:opacity-80 cursor-pointer border-none;
+  }
+
+  .btn-ghost {
+    @apply inline-block border border-white/30 text-white font-semibold text-sm tracking-widest uppercase px-8 py-4 transition-all hover:border-gold hover:text-gold cursor-pointer bg-transparent;
+  }
+
+  .btn-ghost-dark {
+    @apply inline-block border border-ink-300 text-ink-600 font-semibold text-sm px-8 py-4 transition-all hover:border-ink hover:text-ink cursor-pointer bg-transparent;
+  }
+
+  .badge-new {
+    @apply bg-ink text-white text-[10px] font-black tracking-widest px-2 py-0.5 uppercase;
+  }
+
+  .badge-sale {
+    @apply bg-gold text-ink text-[10px] font-black tracking-widest px-2 py-0.5 uppercase;
+  }
+
+  .section-title {
+    @apply font-serif text-4xl font-black text-ink;
+  }
+
+  .nav-link {
+    @apply text-ink-500 text-xs font-bold tracking-widest uppercase transition-colors hover:text-white no-underline;
+  }
+
+  .filter-pill {
+    @apply px-4 py-1.5 border border-ink-200 bg-white text-xs font-semibold cursor-pointer transition-all hover:bg-ink hover:text-white hover:border-ink whitespace-nowrap;
+  }
+
+  .filter-pill.active {
+    @apply bg-ink text-white border-ink;
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fadeUp 0.4s ease forwards;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}

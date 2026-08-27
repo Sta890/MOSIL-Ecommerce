@@ -1,0 +1,93 @@
+<div class="ml-60 min-h-screen bg-ink-50 px-8 py-8">
+
+  <div *ngIf="loading()" class="text-center py-20 text-ink-400">Loading...</div>
+
+  <div *ngIf="!loading() && product()">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-4">
+        <button (click)="router.navigate(['/admin-dashboard'])"
+                class="text-ink-400 hover:text-ink transition-colors bg-transparent border-none cursor-pointer text-2xl">←</button>
+        <h2 class="font-serif text-3xl font-black text-ink">Product Details</h2>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+      <!-- Images -->
+      <div class="bg-white border border-ink-100 p-6">
+        <h3 class="font-black text-xs tracking-widest uppercase text-ink-400 mb-4">Images</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <img *ngFor="let img of getImages()" [src]="img" class="w-full h-48 object-cover bg-ink-100">
+          <div *ngIf="getImages().length === 0"
+               class="col-span-2 h-48 bg-ink-100 flex items-center justify-center text-ink-300">
+            No images
+          </div>
+        </div>
+      </div>
+
+      <!-- Infos -->
+      <div class="bg-white border border-ink-100 p-6">
+        <h3 class="font-black text-xs tracking-widest uppercase text-ink-400 mb-4">Informations</h3>
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Name</span>
+            <span class="font-semibold text-ink">{{ product().name }}</span>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Brand</span>
+            <span class="font-semibold text-ink">{{ product().brand }}</span>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Price</span>
+            <span class="font-black text-ink">{{ product().price | currency }}</span>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Original Price</span>
+            <span class="font-semibold text-ink">{{ product().originalPrice ? (product().originalPrice | currency) : '—' }}</span>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Stock</span>
+            <span [class]="'font-black ' + getStockColor()">{{ product().stock }}</span>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Category</span>
+            <span class="bg-ink-100 text-ink-600 text-xs px-2 py-0.5 font-semibold uppercase">{{ product().category }}</span>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Type</span>
+            <span class="font-semibold text-ink uppercase">{{ product().type }}</span>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Rating</span>
+            <span class="font-semibold text-ink">⭐ {{ product().rating }} ({{ product().reviewCount }} reviews)</span>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Badges</span>
+            <div class="flex gap-2">
+              <span *ngIf="product().isNew" class="bg-green-100 text-green-700 text-xs px-2 py-0.5 font-bold">NEW</span>
+              <span *ngIf="product().isSale" class="bg-red-100 text-red-700 text-xs px-2 py-0.5 font-bold">SALE</span>
+              <span *ngIf="!product().isNew && !product().isSale" class="text-ink-400 text-xs">—</span>
+            </div>
+          </div>
+          <div class="flex justify-between border-b border-ink-100 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Sizes</span>
+            <span class="font-semibold text-ink">{{ product().sizes || '—' }}</span>
+          </div>
+          <div class="flex justify-between pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-ink-400">Colors</span>
+            <span class="font-semibold text-ink">{{ product().colors || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="bg-white border border-ink-100 p-6 lg:col-span-2">
+        <h3 class="font-black text-xs tracking-widest uppercase text-ink-400 mb-4">Description</h3>
+        <p class="text-ink-600 text-sm leading-relaxed">{{ product().description || 'No description.' }}</p>
+      </div>
+
+    </div>
+  </div>
+</div>

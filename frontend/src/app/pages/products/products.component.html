@@ -1,0 +1,106 @@
+<div class="min-h-screen bg-white px-6 lg:px-16 py-8">
+
+  <!-- HEADER -->
+  <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-6 border-b border-ink-100">
+    <div>
+      <h1 class="font-serif text-3xl font-black text-ink">All Products</h1>
+      <span class="text-sm text-ink-400">{{ products().length }} results</span>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+      <div class="relative">
+        <input type="text" placeholder="Search..."
+               [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event); applyFilters()"
+               class="pl-3 pr-8 py-2 border border-ink-200 text-sm outline-none w-48 focus:border-gold transition-colors">
+        <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs">🔍</span>
+      </div>
+      <select [ngModel]="selectedSort()" (ngModelChange)="selectedSort.set($event); applyFilters()"
+              class="px-3 py-2 border border-ink-200 text-sm outline-none cursor-pointer bg-white">
+        <option value="">Sort by</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="price-desc">Price: High → Low</option>
+        <option value="rating">Top Rated</option>
+        <option value="newest">Newest</option>
+      </select>
+      <button (click)="showFilters.update(v => !v)"
+              class="px-4 py-2 border text-sm font-semibold transition-all"
+              [class]="showFilters() ? 'bg-ink text-white border-ink' : 'bg-white text-ink border-ink-200 hover:border-ink'">
+        Filters {{ showFilters() ? '▲' : '▼' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div *ngIf="showFilters()" class="flex flex-wrap gap-6 items-end mb-6 p-5 bg-ink-50 border-l-4 border-gold animate-fade-up">
+    <div>
+      <p class="text-[10px] font-black tracking-widets uppercase text-ink-600 mb-2">Category</p>
+      <div class="flex gap-2 flex-wrap">
+        <button class="filter-pill" [class.active]="selectedCategory() === ''" (click)="selectedCategory.set(''); applyFilters()">All</button>
+        <button class="filter-pill" [class.active]="selectedCategory() === 'men'" (click)="selectedCategory.set('men'); applyFilters()">Men</button>
+        <button class="filter-pill" [class.active]="selectedCategory() === 'women'" (click)="selectedCategory.set('women'); applyFilters()">Women</button>
+        <button class="filter-pill" [class.active]="selectedCategory() === 'kids'" (click)="selectedCategory.set('kids'); applyFilters()">Kids</button>
+      </div>
+    </div>
+    <div>
+      <p class="text-[10px] font-black tracking-widets uppercase text-ink-600 mb-2">Type</p>
+      <div class="flex gap-2">
+        <button class="filter-pill" [class.active]="selectedType() === ''" (click)="selectedType.set(''); applyFilters()">All</button>
+        <button class="filter-pill" [class.active]="selectedType() === 'clothing'" (click)="selectedType.set('clothing'); applyFilters()">Clothing</button>
+        <button class="filter-pill" [class.active]="selectedType() === 'shoes'" (click)="selectedType.set('shoes'); applyFilters()">Shoes</button>
+      </div>
+    </div>
+    <div>
+      <p class="text-[10px] font-black tracking-widets uppercase text-ink-600 mb-2">Brand</p>
+      <div class="flex gap-2 flex-wrap">
+        <button class="filter-pill" [class.active]="selectedBrand() === ''" (click)="selectedBrand.set(''); applyFilters()">All</button>
+        <button *ngFor="let b of brands()" class="filter-pill" [class.active]="selectedBrand() === b" (click)="selectedBrand.set(b); applyFilters()">{{ b }}</button>
+      </div>
+    </div>
+    <div>
+      <p class="text-[10px] font-black tracking-widets uppercase text-ink-600 mb-2">Max Price: {{ priceMax() | currency:'XOF':'symbol':'1.0-0' }}</p>
+      <input type="range" min="0" max="500" step="10"
+             [ngModel]="priceMax()" (ngModelChange)="priceMax.set($event); applyFilters()"
+             class="w-44 accent-gold">
+    </div>
+    <button *ngIf="hasActiveFilters()" (click)="clearFilters()"
+            class="px-4 py-1.5 text-xs border border-ink-300 text-ink-600 hover:border-ink hover:text-ink transition-all">
+      Clear All ×
+    </button>
+  </div>
+
+  <!-- ACTIVE FILTER TAGS -->
+  <div *ngIf="hasActiveFilters()" class="flex gap-2 flex-wrap mb-5">
+    <span *ngIf="selectedCategory()" class="inline-flex items-center gap-2 bg-ink text-white text-xs px-3 py-1 capitalize">
+      {{ selectedCategory() }}
+      <button (click)="selectedCategory.set(''); applyFilters()" class="text-white/70 hover:text-white text-base leading-none">×</button>
+    </span>
+    <span *ngIf="selectedType()" class="inline-flex items-center gap-2 bg-ink text-white text-xs px-3 py-1 capitalize">
+      {{ selectedType() }}
+      <button (click)="selectedType.set(''); applyFilters()" class="text-white/70 hover:text-white text-base leading-none">×</button>
+    </span>
+    <span *ngIf="selectedBrand()" class="inline-flex items-center gap-2 bg-ink text-white text-xs px-3 py-1">
+      {{ selectedBrand() }}
+      <button (click)="selectedBrand.set(''); applyFilters()" class="text-white/70 hover:text-white text-base leading-none">×</button>
+    </span>
+    <span *ngIf="searchQuery()" class="inline-flex items-center gap-2 bg-gold text-ink text-xs px-3 py-1 font-semibold">
+      "{{ searchQuery() }}"
+      <button (click)="searchQuery.set(''); applyFilters()" class="text-ink/70 hover:text-ink text-base leading-none">×</button>
+    </span>
+  </div>
+
+  <!-- GRID -->
+  <div *ngIf="products().length > 0; else noResults"
+       class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <app-product-card *ngFor="let p of products()" [product]="p"></app-product-card>
+  </div>
+
+  <!-- NO RESULTS -->
+  <ng-template #noResults>
+    <div class="text-center py-32">
+      <span class="text-6xl block mb-4">🛍️</span>
+      <h3 class="font-serif text-2xl text-ink mb-2">No products found</h3>
+      <p class="text-ink-500 mb-8">Try adjusting your filters</p>
+      <button class="btn-primary" (click)="clearFilters()">Clear Filters</button>
+    </div>
+  </ng-template>
+
+</div>

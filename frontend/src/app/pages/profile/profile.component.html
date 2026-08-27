@@ -1,0 +1,162 @@
+<div class="min-h-screen bg-ink-50 px-6 lg:px-16 py-10">
+
+  <div *ngIf="loading()" class="text-center py-20 text-ink-400">Loading...</div>
+
+  <div *ngIf="!loading() && user()">
+
+    <!-- HEADER -->
+    <div class="flex items-center gap-5 mb-10">
+      <div class="w-16 h-16 bg-ink rounded-full flex items-center justify-center text-white text-2xl font-black">
+        {{ user().firstName?.charAt(0) }}{{ user().lastName?.charAt(0) }}
+      </div>
+      <div>
+        <h1 class="font-serif text-3xl font-black text-ink">{{ user().firstName }} {{ user().lastName }}</h1>
+        <p class="text-ink-400 text-sm">{{ user().email }}</p>
+        <span [class]="'text-xs font-black px-2 py-0.5 rounded-full ' + (user().role === 'ADMIN' ? 'bg-gold text-ink' : 'bg-ink-100 text-ink-600')">
+          {{ user().role }}
+        </span>
+      </div>
+    </div>
+
+    <!-- SUCCESS / ERROR -->
+    <div *ngIf="successMessage()" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 mb-6 text-sm font-semibold">
+      ✓ {{ successMessage() }}
+    </div>
+    <div *ngIf="errorMessage()" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 mb-6 text-sm font-semibold">
+      ✗ {{ errorMessage() }}
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-8">
+
+      <!-- SIDEBAR -->
+      <aside class="flex flex-col gap-1">
+        <button *ngFor="let tab of tabs"
+                (click)="setTab(tab.id)"
+                [class]="'flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-colors text-left w-full ' +
+                  (activeTab() === tab.id ? 'bg-ink text-white' : 'bg-white border border-ink-100 text-ink hover:bg-ink-50')">
+          <span>{{ tab.icon }}</span>
+          {{ tab.label }}
+        </button>
+      </aside>
+
+      <!-- CONTENT -->
+      <div>
+
+        <!-- ═══════════ MY INFO ═══════════ -->
+        <div *ngIf="activeTab() === 'info'" class="bg-white border border-ink-100 p-8">
+          <h2 class="font-serif text-2xl font-black text-ink mb-6">Personal Information</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">First Name</label>
+              <input type="text" [value]="profileForm().firstName"
+                     (input)="updateProfileField('firstName', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">Last Name</label>
+              <input type="text" [value]="profileForm().lastName"
+                     (input)="updateProfileField('lastName', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+            <div class="flex flex-col gap-1.5 sm:col-span-2">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">Email</label>
+              <input type="email" [value]="user().email" disabled
+                     class="px-4 py-3 border border-ink-100 text-sm bg-ink-50 text-ink-400 cursor-not-allowed">
+            </div>
+            <div class="flex flex-col gap-1.5 sm:col-span-2">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">Phone</label>
+              <input type="text" [value]="profileForm().phone"
+                     (input)="updateProfileField('phone', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+            <div class="flex flex-col gap-1.5 sm:col-span-2">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">Address</label>
+              <input type="text" [value]="profileForm().address"
+                     (input)="updateProfileField('address', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">City</label>
+              <input type="text" [value]="profileForm().city"
+                     (input)="updateProfileField('city', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">Country</label>
+              <input type="text" [value]="profileForm().country"
+                     (input)="updateProfileField('country', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button (click)="saveProfile()" class="btn-primary">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- ═══════════ MY ORDERS ═══════════ -->
+        <div *ngIf="activeTab() === 'orders'">
+          <div *ngIf="ordersLoading()" class="text-center py-20 text-ink-400">Loading...</div>
+          <div *ngIf="!ordersLoading() && orders().length === 0" class="bg-white border border-ink-100 p-12 text-center">
+            <span class="text-5xl block mb-4">📦</span>
+            <p class="font-serif text-xl font-black text-ink mb-2">No orders yet</p>
+            <p class="text-ink-400 text-sm">Start shopping to see your orders here!</p>
+          </div>
+          <div *ngIf="!ordersLoading()" class="flex flex-col gap-4">
+            <div *ngFor="let order of orders()" class="bg-white border border-ink-100 p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="font-mono text-sm font-black text-ink">{{ order.orderNumber }}</p>
+                  <p class="text-ink-400 text-xs mt-0.5">{{ order.createdAt | date:'dd/MM/yyyy HH:mm'  }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span [class]="'text-xs font-black px-3 py-1 rounded-full ' + getStatusColor(order.status)">{{ order.status }}</span>
+                  <span class="font-black text-ink">{{ order.total | currency :'XOF':'symbol':'1.0-0' }}</span>
+                  <!-- ✅ BOUTON FACTURE -->
+                  <button (click)="downloadFacture(order.id, order.orderNumber)"
+                          class="flex items-center gap-1.5 px-3 py-1.5 bg-ink text-white text-xs font-bold hover:bg-gold hover:text-ink transition-colors">
+                    📄 Facture
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="order.items && order.items.length > 0" class="flex flex-col gap-2 pt-4 border-t border-ink-100">
+                <div *ngFor="let item of order.items" class="flex justify-between text-sm text-ink-500">
+                  <span>{{ item.product?.name }} × {{ item.quantity }} ({{ item.selectedSize }}, {{ item.selectedColor }})</span>
+                  <span class="font-semibold">{{ item.totalPrice | currency :'XOF':'symbol':'1.0-0'}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════ PASSWORD ═══════════ -->
+        <div *ngIf="activeTab() === 'password'" class="bg-white border border-ink-100 p-8">
+          <h2 class="font-serif text-2xl font-black text-ink mb-6">Change Password</h2>
+          <div class="flex flex-col gap-4 max-w-md">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">Current Password</label>
+              <input type="password" [value]="passwordForm().currentPassword"
+                     (input)="updatePasswordField('currentPassword', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">New Password</label>
+              <input type="password" [value]="passwordForm().newPassword"
+                     (input)="updatePasswordField('newPassword', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-black tracking-widest uppercase text-ink-600">Confirm New Password</label>
+              <input type="password" [value]="passwordForm().confirmPassword"
+                     (input)="updatePasswordField('confirmPassword', $any($event.target).value)"
+                     class="px-4 py-3 border border-ink-200 text-sm outline-none focus:border-gold transition-colors">
+            </div>
+            <div class="flex justify-end mt-2">
+              <button (click)="changePassword()" class="btn-primary">Change Password</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
