@@ -60,5 +60,5 @@ upload:
       root: DEBUG
 
 notch pay:
-        public-key: pk_test.oFmW9V8vJJkoDdD7F254dvToR16ObV9L88TRSWD5MqIKmdAdzC6zlhXO8Owmylb2ionb6Kgo637XofOmotU2rIt7CnDeowjTg8Q4X6uVeffqS3whYToJ9S35LrlOP
-        secret-key: sk_test.bZjcBCTD2VcNdjdWRgeCvBTG8XxQD6WlyYIEbtpAvptvub6N495s4cC5BzaOYivKfye3mXHU0JSITg5LeuiTPG8pilb3y89YO5TOHB78h88a3MTYDwTSLzOVqdWfA
+        public-key: ${NOTCHPAY_PUBLIC_KEY:pk_test.oFmW9V8vJJkoDdD7F254dvToR16ObV9L88TRSWD5MqIKmdAdzC6zlhXO8Owmylb2ionb6Kgo637XofOmotU2rIt7CnDeowjTg8Q4X6uVeffqS3whYToJ9S35LrlOP}
+        secret-key: ${NOTCHPAY_SECRET_KEY:sk_test.bZjcBCTD2VcNdjdWRgeCvBTG8XxQD6WlyYIEbtpAvptvub6N495s4cC5BzaOYivKfye3mXHU0JSITg5LeuiTPG8pilb3y89YO5TOHB78h88a3MTYDwTSLzOVqdWfA}
