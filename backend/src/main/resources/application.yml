@@ -27,8 +27,8 @@ spring:
       mode: never
 
   mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
+    host: ${SPRING_MAIL_HOST:smtp.gmail.com}
+    port: ${SPRING_MAIL_PORT:587}
     username: ${MAIL_USERNAME:onanamboussistael@gmail.com}
     password: ${MAIL_PASSWORD:"jhth pdvb oxjk jrld"}
     properties:
